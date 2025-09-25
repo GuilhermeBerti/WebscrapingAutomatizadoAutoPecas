@@ -1,32 +1,38 @@
-name: Scraper Automático
+name: Run Scraper and Save CSV
 
 on:
-  workflow_dispatch:   # permite rodar manualmente
+  workflow_dispatch:   # permite rodar na mão
   schedule:
-    - cron: "0 12 * * *"   # roda todo dia às 9h da manhã no Brasil (12h UTC)
+    - cron: "0 12 * * *"   # executa todo dia às 12h UTC (09h de Brasília)
 
 jobs:
   run-scraper:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # necessário para dar commit e push no repo
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Configurar Python
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
-      - name: Instalar dependências
-        run: pip install requests pandas
-
-      - name: Executar scraper
-        run: python aerofolio.py
-
-      - name: Commitar resultado
+      - name: Install dependencies
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4 pandas
+
+      - name: Run scraper
+        run: |
+          python scraper.py
+
+      - name: Commit CSV
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add produtos_aerofolio.csv
-          git commit -m "Atualização automática dos dados"
+          git commit -m "Atualiza CSV via GitHub Actions" || echo "Nenhuma mudança para commitar"
           git push
