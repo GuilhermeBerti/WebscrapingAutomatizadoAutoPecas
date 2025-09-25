@@ -1,0 +1,27 @@
+name: Run Aerofolio Script
+
+on:
+  schedule:
+    - cron: "0 13 * * *"  # roda todo dia às 13h UTC (10h no Brasil, horário padrão)
+  workflow_dispatch:      # permite rodar manualmente também
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run script
+        run: python aerofolio.py
