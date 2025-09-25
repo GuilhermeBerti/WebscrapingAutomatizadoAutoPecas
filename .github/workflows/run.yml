@@ -40,3 +40,4 @@ jobs:
             git push
           else
             echo "⚠️ Nenhum CSV gerado pelo scraper."
+          fi
