@@ -1,14 +1,13 @@
 name: Scraper Automático
 
 on:
+  workflow_dispatch:   # permite rodar manualmente
   schedule:
-    - cron: "0 8 * * *"   # roda todos os dias às 8h UTC
-  workflow_dispatch:      # permite rodar manualmente
+    - cron: "0 12 * * *"   # roda todo dia às 9h da manhã no Brasil (12h UTC)
 
 jobs:
   run-scraper:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
