@@ -64,12 +64,11 @@ while True:
     time.sleep(1)  # respeitar servidor
 
 # =======================================================
-# Salvar no PostgreSQL
+# Salvar CSV
 # =======================================================
 if todos_produtos:
     df = pd.DataFrame(todos_produtos)
 
-    # Renomear colunas principais
     df.rename(columns={
         "item_id": "id",
         "item_name": "produto",
@@ -77,36 +76,11 @@ if todos_produtos:
         "currency": "moeda"
     }, inplace=True)
 
-    # Adicionar timestamp de inserção
     df["data_extracao"] = datetime.utcnow()
 
-    # Conectar ao banco
-    conn = psycopg2.connect(**DB_CONFIG)
-    cur = conn.cursor()
+    # salvar CSV local
+    df.to_csv("produtos_aerofolio.csv", index=False, encoding="utf-8-sig")
 
-    # Criar tabela caso não exista
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS produtos_aerofolio (
-            id TEXT,
-            produto TEXT,
-            preco NUMERIC,
-            moeda TEXT,
-            data_extracao TIMESTAMP
-        )
-    """)
-
-    # Inserir em lote
-    cols = ["id", "produto", "preco", "moeda", "data_extracao"]
-    values = [tuple(x) for x in df[cols].to_numpy()]
-
-    insert_query = f"INSERT INTO produtos_aerofolio ({','.join(cols)}) VALUES %s"
-    execute_values(cur, insert_query, values)
-
-    conn.commit()
-    cur.close()
-    conn.close()
-
-    print(f"✅ {len(values)} produtos salvos no PostgreSQL!")
-
+    print(f"✅ {len(df)} produtos salvos no CSV!")
 else:
     print("⚠️ Nenhum produto encontrado.")

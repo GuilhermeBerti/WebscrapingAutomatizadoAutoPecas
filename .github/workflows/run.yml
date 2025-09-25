@@ -1,27 +1,33 @@
-name: Run Aerofolio Script
+name: Scraper Automático
 
 on:
   schedule:
-    - cron: "0 13 * * *"  # roda todo dia às 13h UTC (10h no Brasil, horário padrão)
-  workflow_dispatch:      # permite rodar manualmente também
+    - cron: "0 8 * * *"   # roda todos os dias às 8h UTC
+  workflow_dispatch:      # permite rodar manualmente
 
 jobs:
-  run-script:
+  run-scraper:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Set up Python
+      - name: Configurar Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+      - name: Instalar dependências
+        run: pip install requests pandas
 
-      - name: Run script
+      - name: Executar scraper
         run: python aerofolio.py
+
+      - name: Commitar resultado
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add produtos_aerofolio.csv
+          git commit -m "Atualização automática dos dados"
+          git push
