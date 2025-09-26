@@ -10,7 +10,6 @@ import os
 
 # =======================================================
 # Config PostgreSQL
-# (troque pelos seus dados de conexão)
 # =======================================================
 DB_CONFIG = {
     "host": os.getenv("DB_HOST"),
@@ -44,7 +43,7 @@ def extrair_pagina(url):
         return []
 
 # =======================================================
-# Entrada fixa (pode virar parâmetro do job)
+# Entrada fixa
 # =======================================================
 categoria = "https://www.jocar.com.br/acabamentos-externos/aerofolio/?PG=1"
 base_url = categoria.split("?PG=")[0] + "?PG={}"
@@ -84,3 +83,4 @@ if todos_produtos:
     print(f"✅ {len(df)} produtos salvos no CSV!")
 else:
     print("⚠️ Nenhum produto encontrado.")
+
