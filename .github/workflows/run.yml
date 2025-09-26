@@ -3,7 +3,7 @@ name: Run Scraper and Save CSV
 on:
   workflow_dispatch:   # permite rodar manualmente
   schedule:
-    - cron: "0 12 * * *"   # executa todo dia às 12h UTC (09h de Brasília)
+    - cron: "0 10 * * *"   # executa todo dia às 10h UTC (07h de Brasília)
 
 jobs:
   run-scraper:
